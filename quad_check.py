@@ -52,22 +52,6 @@ class Card:
     def __repr__(self):
         return f"This card is a {self.number_value},{self.color_value},{self.shape_value}. The Binary representation is {bin(self.vector_representation)}"
 
-card1 = Card("1", "red", "circle")
-print(card1) # Should show something like: Card(Number='1', Color='red', Shape='circle') -> Binary: 0b000000
-
-card2 = Card("4", "yellow", "heart")
-print(card2) # Should show something like: Card(Number='4', Color='yellow', Shape='heart') -> Binary: 0b111111
-
-card3 = Card("2", "blue", "triangle")
-print(card3) # Should show something like: Card(Number='2', Color='blue', Shape='triangle') -> Binary: 0b011001 (based on your mapping)
-      
-# generate a set of cards - k they should have vector representations - this is like our layout 
-# form all possible combinations of 4 set from the layout
-
-#then get the vector_representation of all the cards 
-#XOR all 4 togethers 
-
-#check if the bitwise XOR is 0 and if so print and or return like false for quad status
 
 #making a function to check if a layout contains a quad 
 def has_quad(layout):
@@ -86,25 +70,10 @@ def has_quad(layout):
 
     print(f'Quad status {False}' )
     return False
+
+
 def has_quad_vector(vec_list):
     for combo in itertools.combinations(vec_list, 4):
         if reduce(xor, combo) == 0:
             return True
     return False
-#deal with the none
-
-#testing function
-layout = [
-    Card("1", "red", "circle"),
-    Card("2", "blue", "triangle"),
-    Card("3", "green", "square"),
-    Card("4", "yellow", "heart"),
-    Card("2", "yellow", "square"),
-    Card("1", "green", "heart"),
-    Card("3", "blue", "triangle"),
-    Card("4", "red", "circle")
-    
-]
-
-print(f"{has_quad(layout)}")
-

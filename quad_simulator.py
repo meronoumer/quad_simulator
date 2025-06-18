@@ -1,7 +1,7 @@
 from quad_check import *
 import random
 
-
+# Random vector generator
 def make_vectors(k,n,allow_dup = False):
    max_value = 2**n
    if allow_dup ==True:
@@ -12,9 +12,8 @@ def make_vectors(k,n,allow_dup = False):
       return sample      
 
 
-print(" Sample vectors:", [bin(v) for v in vectors])
 
-
+#Making a function that estimates the number of quads in a
 def quad_prob(k,n):
     count = 0
     for item in range(1000):
@@ -23,10 +22,6 @@ def quad_prob(k,n):
             count +=1
     quad_prob =  count/ 1000
     return quad_prob
-
-#Testing 
-prob = quad_prob(k=10, n=6)
-print(f"Estimated probability of a quad in layout: {prob:.4f}")
 
 
 
