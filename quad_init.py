@@ -3,6 +3,7 @@ from operator import xor
 import random
 import itertools 
 import numpy as np
+from numba import jit,int64
 
 #setting up the card object 
 
@@ -52,8 +53,17 @@ class Card:
     def __repr__(self):
         return f"This card is a {self.number_value},{self.color_value},{self.shape_value}. The Binary representation is {bin(self.vector_representation)}"
 
+#Randomly generating vectors
+def make_vectors(k,n,allow_dup = False):
+   max_value = 2**n
+   if allow_dup:
+      sample =  [random.getrandbits(n) for _ in range(k)]
+      return sample
+   else:
+      sample = random.sample(range(0,max_value),k)   
+      return sample      
 
-#making a function to check if a layout contains a quad 
+#Checks for quads
 def has_quad(layout):
     # form all possible combinations of 4 set from the layout
     
@@ -72,8 +82,22 @@ def has_quad(layout):
     return False
 
 
+@jit(int64(int64[:]),nopython = True,cache = True)
+def has_quad_vector_numba(vec_np_array):
+   
+   if len(vec_np_array) <4:
+      return 0
+   for i in range(len(vec_np_array)):
+      for j in range(i + 1,len(vec_np_array)):
+         for k in range(j+1,len(vec_np_array)):
+            for l in range(k +1,len(vec_np_array)):
+               if (vec_np_array[i]^vec_np_array[j]^vec_np_array[k]^vec_np_array[l] ==0 ):
+                  return 1
+   return 0
+
+              
+   
 def has_quad_vector(vec_list):
-    for combo in itertools.combinations(vec_list, 4):
-        if reduce(xor, combo) == 0:
-            return True
-    return False
+    vec_array = np.array(vec_list,dtype=np.int64)
+    return has_quad_vector_numba(vec_array)==1
+ 
