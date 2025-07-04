@@ -1,9 +1,9 @@
-from functools import reduce
+from functools import reduce,lru_cache
 from operator import xor
 import random
 import itertools 
 import numpy as np
-from numba import jit,int64
+from numba import jit,int64,uint64
 
 #setting up the card object 
 
@@ -55,13 +55,16 @@ class Card:
 
 #Randomly generating vectors
 def make_vectors(k,n,allow_dup = False):
-   max_value = 2**n
    if allow_dup:
       sample =  [random.getrandbits(n) for _ in range(k)]
       return sample
    else:
-      sample = random.sample(range(0,max_value),k)   
-      return sample      
+      if 2**n<k:
+        raise ValueError("Cannot generate k unique vectors with 2^n < k")
+      result = set()
+      while len(result) < k:
+        result.add(random.getrandbits(n))
+      return list(result)  
 
 #Checks for quads
 def has_quad(layout):
@@ -82,7 +85,24 @@ def has_quad(layout):
     return False
 
 
-@jit(int64(int64[:]),nopython = True,cache = True)
+
+quad_cache = {}
+
+def has_quad_vector_cached(vec_list):
+    key = tuple(sorted(vec_list))
+
+    if key in quad_cache:
+        return quad_cache[key]
+
+    # If not in cache, compute
+    vec_array = np.array(vec_list, dtype=np.int64)
+    result = has_quad_vector_numba(vec_array) == 1
+
+    # Store in cache
+    quad_cache[key] = result
+    return result
+
+@jit(int64(uint64[:]),nopython = True,cache = True)
 def has_quad_vector_numba(vec_np_array):
    
    if len(vec_np_array) <4:

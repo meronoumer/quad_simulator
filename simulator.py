@@ -52,6 +52,6 @@ if __name__ == "__main__":
     plt.ylabel("Probabilities of finding a quad")
     plt.title('Probability of finding a quad in different Layouts')
     plt.grid(True) 
-    plt.ylim(0, 1)
+    # plt.ylim(0, 1)
     plt.tight_layout() 
     plt.show()
