@@ -7,6 +7,7 @@ import numba
 import numpy as np
 from line_profiler import profile
 import pandas as pd
+import tqdm
 
 
 def one_trial(args):
@@ -35,9 +36,11 @@ def quad_probability_parallel(k,n,num_trials = 10000):
     
     return prob
 
+
+
 # Simulation loop
 if __name__ == '__main__':
-  k_values = range(8, 22)  # Larger layout sizes
+  k_values = range(8, 24)  # Larger layout sizes
   n_values = [8,9,10,11]   #Deck Sizes = 2^n
   comb_and_prob = {}
   start = time.time()
@@ -70,4 +73,5 @@ if __name__ == '__main__':
   plt.xlim(k_values.start, k_values.stop - 1)
   plt.ylim(0, 1)
   plt.tight_layout()
+  plt.legend()
   plt.show()
